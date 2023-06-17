@@ -16,8 +16,21 @@ Time series forecasting is a very attractive idea for researchers, especially in
 # Data
 
 ```{r}
-1 + 1
-#Hello 
+library(quantmod)
+library(tseries)
+library(forecast)
+ticker <- "^GSPC"
+start_date <- as.Date("2000-01-01")
+end_date <- as.Date("2023-01-01")
+getSymbols(ticker, src = "yahoo", from = start_date, to = end_date)
+sp500 <- data.frame(Date = index(GSPC), coredata(GSPC))
+attach(sp500)
+adf.test(GSPC.Adjusted)
+LNrsp500=diff(log(GSPC.Adjusted))
+adf.test(LNrsp500)
+auto.arima(LNrsp500)
+ModelArimasp500=arima(LNrsp500,order = c(1,0,0))
+ModelArimasp500
 ```
 
 # Methodology
