@@ -2,11 +2,13 @@
 
 Created by Rafal K and Marcin Z.
 
-This project is a reproduction and hopefully an extension of ARIMA Time Series Forecasting - S&P 500 Stock by Yassine Sfaihi.The aim of the research is to verify whether the S&P 500 market price can be acurately forecasted using conventional time series analysis tools.In the extension of the project, the ARIMA model will be compared with a much more advanced machine learning technique - neural networks.
+This project is a reproduction and hopefully an extension of ARIMA Time Series Forecasting - S&P 500 Stock by Yassine Sfaihi.The aim of the research is to verify whether the S&P 500 market price can be accurately forecasted using conventional time series analysis tools.In the extension of the project, the ARIMA model will be compared with a much more advanced machine learning technique - neural networks.
 
 # Quickstart
 
-How to reproudce:
+The `/output` directory contains prerendered output files for your convenience. However, if you want, you can render them yourself.
+
+How to reproduce:
 
 1.  Clone the repository:
 
