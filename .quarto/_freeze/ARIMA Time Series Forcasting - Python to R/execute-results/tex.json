@@ -1,0 +1,14 @@
+{
+  "hash": "1c75b89ff9857ce7fed390727ceb4fca",
+  "result": {
+    "markdown": "---\ntitle: \"ARIMA Time Series Forecasting - Python to R\"\n\nformat:\n  pdf:\n    include-in-header:\n      text: |\n        \\addtokomafont{disposition}{\\rmfamily}\n  html: default\n---\n\n\n# Introduction\n\nTime series forecasting is a very attractive idea for researchers, especially in the context of forecasting financial asset prices. However, for centuries mathematicians and scholars who attempted such thing almost always have failed, leading many to believe that market returns are a white noise - a completely random time series.\n\n# Data\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n\n\n# Methodology\n\n# Results\n\n# Conclusion\n\n# References\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}

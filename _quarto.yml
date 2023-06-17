@@ -1,0 +1,21 @@
+project:
+  title: "ARIMA Time Series Forecasting - Python to R"
+  output-dir: output
+subtitle: "Reproducible Research"
+abstract-title: "Executive Summary"
+abstract: >
+  This project is a reproduction and hopefully an extension of ARIMA Time Series Forecasting - S&P 500 Stock by Yassine Sfaihi.
+  The aim of the research is to verify whether the S&P 500 market price can be acurately forecasted using conventional time series analysis tools.
+  In the extension of the project, the ARIMA model will be compared with a much more advanced machine learning technique - neural networks.
+  
+author: "Rafał Kraszek & Marcin Zinówko"
+date: today
+date-format: long
+mainfont: Times New Roman
+monofont: Times New Roman
+format:
+  pdf:
+    include-in-header:
+      text: |
+        \addtokomafont{disposition}{\rmfamily}
+  html: default
