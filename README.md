@@ -10,11 +10,35 @@ The `/output` directory contains prerendered output files for your convenience. 
 
 How to reproduce:
 
-1.  Install dependencies (for pdf)
+1.  Install dependencies:
 
-```         
-  quarto install tinytex
-```
+    1.1 Install tinytex (for pdf renders)
+
+    ```         
+      quarto install tinytex
+    ```
+
+    1.2 Install required R libraries:
+
+    ```{r}
+    install.packages("xts")
+    install.packages("foreach")
+    install.packages("doParallel")
+    install.packages("cowplot")
+    install.packages("readr")
+    install.packages("ggplot2")
+    install.packages("quantmod")
+    install.packages("tseries")
+    install.packages("forecast")
+    install.packages("gridExtra")
+    install.packages("keras")
+    ```
+
+    1.3 Install tensorflow via pip (requires python and pip installed). Run the following command in your terminal:
+
+    ```         
+    pip install tensorflow
+    ```
 
 2.  Clone the repository:
 
@@ -28,6 +52,10 @@ How to reproduce:
   setwd("[...your path]/RR2023_project") # Enter your working directory here
   quarto_render("/ARIMA_Time_Series_Forcasting_Python_to_R.qmd") # render the files
 ```
+
+# Acknowledgements
+
+This project is part of a university course called Reproducible Research led by Wojciech Hardy at the University of Warsaw. AI models GPT-3.5 and GPT-4 have been used to generate parts of the code and help with debugging. Exact prompts can be found in `misc/prompts.txt`.
 
 # References
 

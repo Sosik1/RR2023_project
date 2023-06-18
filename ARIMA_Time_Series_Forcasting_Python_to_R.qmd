@@ -28,13 +28,13 @@ library(forecast)
 library(gridExtra)
 library(Metrics)
 library(stats)
+library(keras)
 ```
-
 
 ```{r include=FALSE}
-df <- read.csv("C:\\Users\\marci\\OneDrive\\Dokumenty\\Nowy folder\\RR2023_project\\sp500_data.csv")
+df <- read.csv("dataset/sp500_data.csv")
 ```
-# Metodology step 1
+# Metodology
 We used the ggplot2 package to visually examine the stationarity of the time series. We plotted the prices and returns of sp500 and based on our visual analysis, we concluded that the price time series is non-stationary.
 
 ```{r}
@@ -60,7 +60,7 @@ combined_plot <- plot_grid(p1, p2, nrow = 2, align = "v", axis = "l")
 
 print(combined_plot)
 ```
-# Metodology step 2
+
 Now we used the ggplot2 package to visually examine the stationarity of the returns of SP500. In addition, we also conducted an Augmented Dickey-Fuller (ADF) test to confirm the aforementioned observations. The ADF test provided further evidence supporting our conclusions, indicating that the price time series is indeed non-stationary, while the returns time series is stationary.
 
 ```{r}
@@ -92,10 +92,10 @@ returns <- returns[complete_data]
 plot(time_index, returns, type = "l", xlab = "Time", ylab = "Returns", main = "SP500 Daily Returns")
 
 ```
-# Metodology step 3
+
 The code below conducts a grid search to find the optimal values of p, d, and q for an ARIMA model by evaluating the AIC values for different combinations. The combination with the lowest AIC value is considered to be the best set of parameters for the model.
 
-```{r echo=}
+```{r}
 dfret <- data.frame(Date = as.Date(time_index), Returns = returns)
 
 # Convert the Date column to a proper date format
@@ -128,13 +128,11 @@ for(i in 1:nrow(pdq)) {
   }
 }
 
-best_pdq
-cat(" x 12 Model - AIC:", best_aic,"\n")
+cat("Best model AIC:", best_aic,"\n")
 ```
-# Metodology step 4
+# Metodology
 Code below splits the data into train and test sets, fits an ARIMA model to the training data, makes predictions on the test data using the model, and plots the actual values along with the predicted values for visualization and comparison.
 ```{r}
-
 # Split the data into train and test sets
 train_data <- xts_obj[1:floor(length(xts_obj)*0.8)]
 test_data <- xts_obj[(floor(length(xts_obj)*0.8) + 1):length(xts_obj)]
@@ -146,25 +144,138 @@ predictions <- forecast(model, h = length(test_data))
 
 
 # Plot the predictions against the actual values
-dfactvspred <- data.frame(Date = index(test_data), Actual = coredata(test_data), predictions = as.numeric(predictions$fitted))
+#dfactvspred <- data.frame(Date = index(test_data), Actual = coredata(test_data), predictions = as.numeric(predictions$fitted))
 
 
 # Plot the actual values and predictions
-plot(test_data, main = "Actual vs Predictions", ylab = "Value")
-lines(dfactvspred$predictions, col = "red")
-legend("topleft", legend = c("Actual", "Predictions"), col = c("black", "red"), lty = 1)
-
+#plot(test_data, main = "Actual vs Predictions", ylab = "Value")
+#lines(dfactvspred$predictions, col = "red")
+#legend("topleft", legend = c("Actual", "Predictions"), col = c("black", "red"), lty = 1)
 
 ```
-
-
-
 
 ```{r}
 rmse <- sqrt(mean((as.numeric(predictions$fitted) - as.numeric(test_data$Return))^2))
 print(paste("RMSE: ", rmse))
 
 ```
+# Results
+
+# Comparing ARIMA with an LSTM model
+
+As noticed above, the ARIMA model is a good benchmark and an initial analysis tool, but it does not posses a lot of predictive power. A better alternative to the ARIMA model which is a simple machine learning model, would be the LSTM model which stands for Long Short-Term Memory and is a neural network that has shown effective in predicting time series like price data.
+
+```{r}
+# Scale the data to values from 0 to 1
+max_val <- max(df$GSPC.Adjusted)
+min_val <- min(df$GSPC.Adjusted)
+scaled_data <- (df$GSPC.Adjusted - min_val) / (max_val - min_val)
+```
+
+```{r}
+# Define function that will be used to generate input data sequences
+
+data_sequence <- function(data, sl) {
+  result_x = list()
+  result_y = list()
+  
+  for(i in 1:(length(data)-sl)) {
+    result_x[[i]] <- data[i:(i+sl-1)]
+    result_y[[i]] <- data[(i+sl)]
+  }
+  
+  x <- array_reshape(unlist(result_x), dim = c(length(result_x), sl, 1))
+  y <- unlist(result_y)
+  
+  list("x" = x, "y" = y)
+}
+```
+
+```{r}
+# Create data sequences
+sequence_length <- 50
+
+train_data <- data_sequence(scaled_data[1:round(length(scaled_data)*0.8)], sequence_length)
+x_train <- train_data$x
+y_train <- train_data$y
+
+test_data <- data_sequence(scaled_data[(round(length(scaled_data)*0.8)+1):(length(scaled_data)-1)], sequence_length)
+x_test <- test_data$x
+y_test <- test_data$y
+```
+
+```{r}
+# Create LSTM model
+model <- keras_model_sequential() %>%
+  layer_lstm(units = 50, input_shape = c(sequence_length, 1), return_sequences = TRUE) %>%
+  layer_dropout(rate = 0.2) %>%
+  layer_lstm(units = 50, return_sequences = FALSE) %>%
+  layer_dropout(rate = 0.2) %>%
+  layer_dense(units = 1)
+```
+
+```{r}
+# Compile the model
+model %>% compile(
+  optimizer = optimizer_adam(learning_rate = 0.001),
+  loss = "mse"
+)
+```
+
+```{r echo=FALSE}
+# Train the model
+model %>% fit(
+  x_train, y_train,
+  epochs = 50,
+  batch_size = 32
+)
+```
+
+```{r include=FALSE}
+# Evaluate the model
+model %>% evaluate(x_test, y_test)
+```
+
+Thus we have achieved a model with a MSE of 0.000555671 which is quite impressive. But let's evaluate the model's accuracy and test it's out-of-sample performance.
+
+```{r echo=FALSE}
+# Predict the S&P500 index
+predictions_scaled <- model %>% predict(x_test)
+
+# Rescale the predictions back to the original scale
+predictions <- predictions_scaled * (max_val - min_val) + min_val
+
+# Rescale the test set back to the original scale
+y_test_rescaled <- y_test * (max_val - min_val) + min_val
+
+# Create a data frame for the true and predicted values
+results <- data.frame(Day = 1:length(y_test_rescaled), 
+                      Actual = y_test_rescaled, 
+                      Predicted = as.vector(predictions))
+```
+
+```{r}
+# Plot the true and predicted values
+ggplot(results, aes(Day)) +
+  geom_line(aes(y = Actual, colour = "Actual")) +
+  geom_line(aes(y = Predicted, colour = "Predicted")) +
+  labs(x = "Day", y = "Closing Price", colour = "Legend", 
+       title = "Actual and Predicted S&P500 Index")
+```
+
+```{r}
+# Calculate MSE and MAE
+mse <- mean((results$Actual - results$Predicted)^2)
+mae <- mean(abs(results$Actual - results$Predicted))
+rmse <- sqrt(mse)
+
+cat("MSE: ", mse, "\n")
+cat("MAE: ", mae, "\n")
+cat("RMSE: ", rmse)
+```
+
 # Conclusion
 We explored the steps involved in time series forecasting using the Autoregressive Integrated Moving Average (ARIMA) model. We started with data visualization to gain insights into the time series data. Then, we conducted stationarity tests to determine the stationarity of the series.Than we performed parameter tuning by searching for the optimal values of p, d, and q using a grid search approach. We selected the best combination of parameters based on the AIC value, which measures the model's goodness of fit while penalizing complexity. After obtaining the best parameter values, we split the data into training and test sets and built an ARIMA model using the training data. We used the model to make predictions on the test data. Additionally, we calculated the root mean squared error (RMSE) to evaluate the performance of the model.
+
 # References
+[Sfaihi Y. (2023), ARIMA Time Series Forecasting - S&P 500 Stock](https://www.kaggle.com/code/yassinesfaihi/arima-time-series-forecasting-s-p-500-stock)
