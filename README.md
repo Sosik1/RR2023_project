@@ -2,9 +2,9 @@
 
 Created by Rafal K and Marcin Z.
 
-This project is a reproduction and hopefully an extension of ARIMA Time Series Forecasting - S&P 500 Stock by Yassine Sfaihi.The aim of the research is to verify whether the S&P 500 market price can be accurately forecasted using conventional time series analysis tools.In the extension of the project, the ARIMA model will be compared with a much more advanced machine learning technique - neural networks.
+This project is a reproduction and hopefully an extension of ARIMA Time Series Forecasting - S&P 500 Stock by Yassine Sfaihi.The aim of the research is to verify whether the S&P 500 market price can be accurately forecasted using conventional time series analysis tools.In the extension of the project, the ARIMA model will be compared with a much more advanced machine learning technique - the LSTM neural network.
 
-# Quickstart
+# How to reproduce
 
 The `/output` directory contains prerendered output files for your convenience. However, if you want, you can render them yourself.
 
@@ -32,6 +32,8 @@ How to reproduce:
     install.packages("forecast")
     install.packages("gridExtra")
     install.packages("keras")
+    install.packages("Metrics")
+    install.packages("stats")
     ```
 
     1.3 Install tensorflow via pip (requires python and pip installed). Run the following command in your terminal:
