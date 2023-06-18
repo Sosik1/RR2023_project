@@ -10,17 +10,23 @@ The `/output` directory contains prerendered output files for your convenience. 
 
 How to reproduce:
 
-1.  Clone the repository:
+1.  Install dependencies (for pdf)
+
+```         
+  quarto install tinytex
+```
+
+2.  Clone the repository:
 
 ```         
   git clone https://github.com/Sosik1/RR2023_project.git
 ```
 
-2.  Set working directory and run quarto_render in R console:
+3.  Set working directory and run quarto_render in R console:
 
 ```         
-  setwd(".../RR2023_project") # Enter your working directory here
-  quarto_render("/ARIMA Time Series Forcasting - Python to R") # render the files
+  setwd("[...your path]/RR2023_project") # Enter your working directory here
+  quarto_render("/ARIMA_Time_Series_Forcasting_Python_to_R.qmd") # render the files
 ```
 
 # References
