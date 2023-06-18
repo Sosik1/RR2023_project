@@ -14,7 +14,7 @@ format:
 Time series forecasting is a very attractive idea for researchers, especially in the context of forecasting financial asset prices. However, for centuries mathematicians and scholars who attempted such thing almost always have failed, leading many to believe that market returns are a white noise - a completely random time series.
 
 # Data
-
+We used sp500 quotation data downloaded from yahoo finance for the period from 01.01.2000 to 01.01.2023
 ```{r include=FALSE}
 library(xts)
 library(foreach)
@@ -275,7 +275,7 @@ cat("RMSE: ", rmse)
 ```
 
 # Conclusion
-We explored the steps involved in time series forecasting using the Autoregressive Integrated Moving Average (ARIMA) model. We started with data visualization to gain insights into the time series data. Then, we conducted stationarity tests to determine the stationarity of the series.Than we performed parameter tuning by searching for the optimal values of p, d, and q using a grid search approach. We selected the best combination of parameters based on the AIC value, which measures the model's goodness of fit while penalizing complexity. After obtaining the best parameter values, we split the data into training and test sets and built an ARIMA model using the training data. We used the model to make predictions on the test data. Additionally, we calculated the root mean squared error (RMSE) to evaluate the performance of the model.
+We explored the steps involved in time series forecasting using the Autoregressive Integrated Moving Average model. We started with data visualization to gain insights into the time series data. Then, we conducted stationarity tests to determine the stationarity of the series.Than we performed parameter tuning by searching for the optimal values of p, d, and q using a grid search approach. We selected the best combination of parameters based on the AIC value, which measures the model's goodness of fit while penalizing complexity. After obtaining the best parameter values, we split the data into training and test sets and built an ARIMA model using the training data. We used the model to make predictions on the test data. Additionally, we calculated the root mean squared error to evaluate the performance of the model.
 
 # References
 [Sfaihi Y. (2023), ARIMA Time Series Forecasting - S&P 500 Stock](https://www.kaggle.com/code/yassinesfaihi/arima-time-series-forecasting-s-p-500-stock)
