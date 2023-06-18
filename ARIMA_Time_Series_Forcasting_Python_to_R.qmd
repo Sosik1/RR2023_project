@@ -26,15 +26,16 @@ library(quantmod)
 library(tseries)
 library(forecast)
 library(gridExtra)
+library(Metrics)
+library(stats)
 ```
 
 
 ```{r include=FALSE}
 df <- read.csv("C:\\Users\\marci\\OneDrive\\Dokumenty\\Nowy folder\\RR2023_project\\sp500_data.csv")
 ```
-# Metodology
-We used the ggplot2 package to visually examine the stationarity of the time series. We plotted the prices and returns of sp500 and based on our visual analysis, we concluded that the price time series is non-stationary, while the returns time series is stationarity. In addition, we also conducted an Augmented Dickey-Fuller (ADF) test to confirm the aforementioned observations. The ADF test provided further evidence supporting our conclusions, indicating that the price time series is indeed non-stationary, while the returns time series is stationary.
-
+# Metodology step 1
+We used the ggplot2 package to visually examine the stationarity of the time series. We plotted the prices and returns of sp500 and based on our visual analysis, we concluded that the price time series is non-stationary.
 
 ```{r}
 df <- na.omit(df)
@@ -59,8 +60,8 @@ combined_plot <- plot_grid(p1, p2, nrow = 2, align = "v", axis = "l")
 
 print(combined_plot)
 ```
-
-
+# Metodology step 2
+Now we used the ggplot2 package to visually examine the stationarity of the returns of SP500. In addition, we also conducted an Augmented Dickey-Fuller (ADF) test to confirm the aforementioned observations. The ADF test provided further evidence supporting our conclusions, indicating that the price time series is indeed non-stationary, while the returns time series is stationary.
 
 ```{r}
 timeseries <- df$GSPC.Close
@@ -69,7 +70,6 @@ adf_result <- adf.test(timeseries)
 
 cat("ADF Statistic:", adf_result$statistic, "\n")
 cat("p-value:", adf_result$p.value, "\n")
-
 
 #Calc of returns 
 
@@ -92,7 +92,8 @@ returns <- returns[complete_data]
 plot(time_index, returns, type = "l", xlab = "Time", ylab = "Returns", main = "SP500 Daily Returns")
 
 ```
-
+# Metodology step 3
+The code below conducts a grid search to find the optimal values of p, d, and q for an ARIMA model by evaluating the AIC values for different combinations. The combination with the lowest AIC value is considered to be the best set of parameters for the model.
 
 ```{r echo=}
 dfret <- data.frame(Date = as.Date(time_index), Returns = returns)
@@ -130,8 +131,8 @@ for(i in 1:nrow(pdq)) {
 best_pdq
 cat(" x 12 Model - AIC:", best_aic,"\n")
 ```
-
-
+# Metodology step 4
+Code below splits the data into train and test sets, fits an ARIMA model to the training data, makes predictions on the test data using the model, and plots the actual values along with the predicted values for visualization and comparison.
 ```{r}
 
 # Split the data into train and test sets
@@ -156,10 +157,14 @@ legend("topleft", legend = c("Actual", "Predictions"), col = c("black", "red"), 
 
 ```
 
-# Methodology
 
-# Results
 
+
+```{r}
+rmse <- sqrt(mean((as.numeric(predictions$fitted) - as.numeric(test_data$Return))^2))
+print(paste("RMSE: ", rmse))
+
+```
 # Conclusion
-
+We explored the steps involved in time series forecasting using the Autoregressive Integrated Moving Average (ARIMA) model. We started with data visualization to gain insights into the time series data. Then, we conducted stationarity tests to determine the stationarity of the series.Than we performed parameter tuning by searching for the optimal values of p, d, and q using a grid search approach. We selected the best combination of parameters based on the AIC value, which measures the model's goodness of fit while penalizing complexity. After obtaining the best parameter values, we split the data into training and test sets and built an ARIMA model using the training data. We used the model to make predictions on the test data. Additionally, we calculated the root mean squared error (RMSE) to evaluate the performance of the model.
 # References
