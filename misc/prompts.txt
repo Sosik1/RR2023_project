@@ -1,0 +1,7 @@
+Use the grid search method to find the optimal values of 'p', 'd', and 'q  and divide the dataset into training and test sets, all in R
+
+Error in results$AIC : $ operator is invalid for atomic vectors how to solve this problem
+
+Estimate a LSTM model on sp500 in R
+
+The error still persists. Does it have anything to do with the fact that we are passing input_shape=c(sequence_length) which is just c(50)?
